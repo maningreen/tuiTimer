@@ -1,5 +1,8 @@
-#include "math.h"
+#include <math.h>
 #include <ncurses.h>
+#include <unistd.h>
+
+#define pi 3.141592 // it aint that deep
 
 #define getCenter(vec) { getmaxyx(stdscr, vec.y, vec.x); vec.x /= 2; vec.y /= 2;}
 
@@ -16,7 +19,7 @@ void drawCircle(float radius, char character) {
   // from 0 r to pi / 2 r
   // but oh ho ho how do we decide how our accuraccy
   const unsigned int stepCount = 20;
-  const float stepSize = M_PI / (2 * stepCount);
+  const float stepSize = pi / (2 * stepCount);
 
   vector2 center; 
   getCenter(center);
@@ -44,14 +47,25 @@ void drawHand(float length, float angle, char character) {
   }
 }
 
+void toTime(unsigned timeLeft, unsigned* seconds, unsigned* minutes) {
+  // this aint too hard :p
+  *seconds = timeLeft % 60;
+  *minutes = timeLeft / 60;
+}
+
 int main() {
-  initscr();
+  // initscr();
 
-  drawCircle(10, 'H');
-  drawHand(100, 3, 'c');
-  refresh();
-  getch();
+  unsigned timeRemaining = 61; // we'll worry abt setting this later
 
-  endwin();
+  while(--timeRemaining > 0) {
+    unsigned timeS;
+    unsigned timeM;
+    toTime(timeRemaining, &timeS, &timeM);
+    printf("%u : %u\n", timeM, timeS);
+    sleep(1);
+  }
+
+  // endwin();
   return 0;
 }

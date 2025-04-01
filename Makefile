@@ -7,6 +7,9 @@ OBJECTS = $(SRC:src/%.c=$(BUILDDIR)%.o)
 # COMPILER
 CC = gcc
 
+# the standard for that there c
+STD = c99
+
 # flags
 LDFLAGS = -lncurses -lm
 
@@ -18,7 +21,7 @@ $(TARGET): $(OBJECTS) $(BUILDDIR)
 	$(CC) $(OBJECTS) -o $(BUILDDIR)$(TARGET) $(LDFLAGS)
 
 build/%.o: src/%.c $(BUILDDIR)
-	$(CC) -c $< -o $@
+	$(CC) -std=$(STD) -c $< -o $@
 
 $(BUILDDIR):
 	mkdir -p $(BUILDDIR)
