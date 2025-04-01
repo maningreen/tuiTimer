@@ -1,6 +1,8 @@
 #include "math.h"
 #include <ncurses.h>
 
+#define getCenter(vec) { getmaxyx(stdscr, vec.y, vec.x); vec.x /= 2; vec.y /= 2;}
+
 typedef struct {
   float x;
   float y;
@@ -17,9 +19,7 @@ void drawCircle(float radius, char character) {
   const float stepSize = M_PI / (2 * stepCount);
 
   vector2 center; 
-  getmaxyx(stdscr, center.y, center.x);
-  center.x /= 2;
-  center.y /= 2;
+  getCenter(center);
 
   for(int i = 0; i < stepCount; i++) {
     vector2 item = (vector2){radius * cos(i * stepSize), radius * sin(i * stepSize) * scaleFactor};
@@ -30,10 +30,25 @@ void drawCircle(float radius, char character) {
   }
 }
 
+void drawHand(float length, float angle, char character) {
+  const float stepSize = .5;
+
+  vector2 scalar = {cos(angle), sin(angle) * scaleFactor};
+
+  vector2 center;
+  getCenter(center);
+
+  while(length >= 0) {
+    mvprintw((scalar.y * length) + center.y, (scalar.x * length) + center.x, "%c", character);
+    length -= stepSize;
+  }
+}
+
 int main() {
   initscr();
 
   drawCircle(10, 'H');
+  drawHand(100, 3, 'c');
   refresh();
   getch();
 
