@@ -17,7 +17,7 @@ BUILDDIR = build/
 $(TARGET): $(OBJECTS) $(BUILDDIR)
 	$(CC) $(OBJECTS) -o $(BUILDDIR)$(TARGET) $(LDFLAGS)
 
-build/%.o: src/%.c $(BUILDDIR)
+$(BUILDDIR)/%.o: src/%.c $(BUILDDIR)
 	$(CC) -c $< -o $@
 
 
