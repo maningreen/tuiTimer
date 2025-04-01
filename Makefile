@@ -8,7 +8,7 @@ OBJECTS = $(SRC:src/%.c=$(BUILDDIR)%.o)
 CC = gcc
 
 # flags
-LDFLAGS = -lncurses
+LDFLAGS = -lncurses -lm
 
 # target
 TARGET = out
