@@ -17,11 +17,7 @@ BUILDDIR = build/
 $(TARGET): $(OBJECTS) $(BUILDDIR)
 	$(CC) $(OBJECTS) -o $(BUILDDIR)$(TARGET) $(LDFLAGS)
 
-$(BUILDDIR)/%.o: src/%.c $(BUILDDIR)
-	$(CC) -c $< -o $@
-
-
-$(BUILDDIR)%.o: src/engine/%.c $(BUILDDIR)
+build/%.o: src/%.c $(BUILDDIR)
 	$(CC) -c $< -o $@
 
 $(BUILDDIR):
