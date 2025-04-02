@@ -1,4 +1,4 @@
-{pkgs ? import <nixpkgs> {}, ...}: let 
+{pkgs ? import <nixpkgs> { config = {}; overlays = []; }, ...}: let 
   excecutable = "out";
 in pkgs.stdenv.mkDerivation {
   name = excecutable;

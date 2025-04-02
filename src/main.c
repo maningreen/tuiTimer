@@ -3,8 +3,9 @@
 #include <unistd.h>
 
 #define pi 3.141592 // it aint that deep
+#define second 1000000
 
-#define getCenter(vec) { getmaxyx(stdscr, vec.y, vec.x); vec.x /= 2; vec.y /= 2;}
+#define getCenter(vec) { getmaxyx(stdscr, vec.y, vec.x); vec.x /= 2; vec.y /= 2; }
 
 typedef struct {
   float x;
@@ -18,7 +19,7 @@ void drawCircle(float radius, char character) {
   // what you do is you store the first quarter of the rotations
   // from 0 r to pi / 2 r
   // but oh ho ho how do we decide how our accuraccy
-  const unsigned int stepCount = 20;
+  const unsigned int stepCount = radius;
   const float stepSize = pi / (2 * stepCount);
 
   vector2 center; 
@@ -47,25 +48,49 @@ void drawHand(float length, float angle, char character) {
   }
 }
 
-void toTime(unsigned timeLeft, unsigned* seconds, unsigned* minutes) {
+void toTime(unsigned timeLeft, float* seconds, float* minutes, float* hours) {
   // this aint too hard :p
   *seconds = timeLeft % 60;
-  *minutes = timeLeft / 60;
+  *minutes = timeLeft / 60.0f;
+  *hours = timeLeft / 3600.0f;
 }
 
 int main() {
-  // initscr();
+  initscr();
 
-  unsigned timeRemaining = 61; // we'll worry abt setting this later
+  unsigned timeRemaining = 60 * 2; // we'll worry abt setting this later
 
-  while(--timeRemaining > 0) {
-    unsigned timeS;
-    unsigned timeM;
-    toTime(timeRemaining, &timeS, &timeM);
-    printf("%u : %u\n", timeM, timeS);
-    sleep(1);
+  curs_set(0);
+  nodelay(stdscr, true);
+
+  while(timeRemaining-- > 0) {
+    float timeS;
+    float timeM;
+    float timeH;
+    toTime(timeRemaining, &timeS, &timeM, &timeH);
+
+    float angleS = pi * 2 * (timeS / 60.0f) - pi / 2;
+    float angleM = pi * 2 * (timeM / 60.0f) - pi / 2;
+    float angleH = pi * 2 * (timeH / 24.0f) - pi / 2;
+
+    erase();
+    
+    drawCircle(30, '#');
+    drawHand(30, angleM, 'm');
+    drawHand(30, angleS, 's');
+    drawHand(30, angleH, 'h');
+
+    refresh();
+
+    for(int i = 0; i < 10; i++) {
+      usleep(second / 10);
+      if(getch() != 'q')
+        continue;
+      timeRemaining = 0;
+      break;
+    }
   }
 
-  // endwin();
+  endwin();
   return 0;
 }
