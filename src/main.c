@@ -1,7 +1,11 @@
-#include "math.h"
+#include <math.h>
 #include <ncurses.h>
+#include <unistd.h>
 
-#define getCenter(vec) { getmaxyx(stdscr, vec.y, vec.x); vec.x /= 2; vec.y /= 2;}
+#define pi 3.141592 // it aint that deep
+#define second 1000000
+
+#define getCenter(vec) { getmaxyx(stdscr, vec.y, vec.x); vec.x /= 2; vec.y /= 2; }
 
 typedef struct {
   float x;
@@ -15,8 +19,8 @@ void drawCircle(float radius, char character) {
   // what you do is you store the first quarter of the rotations
   // from 0 r to pi / 2 r
   // but oh ho ho how do we decide how our accuraccy
-  const unsigned int stepCount = 20;
-  const float stepSize = M_PI / (2 * stepCount);
+  const unsigned int stepCount = radius;
+  const float stepSize = pi / (2 * stepCount);
 
   vector2 center; 
   getCenter(center);
@@ -44,13 +48,48 @@ void drawHand(float length, float angle, char character) {
   }
 }
 
+void toTime(unsigned timeLeft, float* seconds, float* minutes, float* hours) {
+  // this aint too hard :p
+  *seconds = timeLeft % 60;
+  *minutes = timeLeft / 60.0f;
+  *hours = timeLeft / 3600.0f;
+}
+
 int main() {
   initscr();
 
-  drawCircle(10, 'H');
-  drawHand(100, 3, 'c');
-  refresh();
-  getch();
+  unsigned timeRemaining = 60 * 2; // we'll worry abt setting this later
+
+  curs_set(0);
+  nodelay(stdscr, true);
+
+  while(timeRemaining-- > 0) {
+    float timeS;
+    float timeM;
+    float timeH;
+    toTime(timeRemaining, &timeS, &timeM, &timeH);
+
+    float angleS = pi * 2 * (timeS / 60.0f) - pi / 2;
+    float angleM = pi * 2 * (timeM / 60.0f) - pi / 2;
+    float angleH = pi * 2 * (timeH / 24.0f) - pi / 2;
+
+    erase();
+    
+    drawCircle(30, '#');
+    drawHand(30, angleM, 'm');
+    drawHand(30, angleS, 's');
+    drawHand(30, angleH, 'h');
+
+    refresh();
+
+    for(int i = 0; i < 10; i++) {
+      usleep(second / 10);
+      if(getch() != 'q')
+        continue;
+      timeRemaining = 0;
+      break;
+    }
+  }
 
   endwin();
   return 0;
