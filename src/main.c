@@ -1,6 +1,7 @@
 #include <math.h>
 #include <ncurses.h>
 #include <unistd.h>
+#include "str.h"
 
 #define pi 3.141592 // it aint that deep
 #define twopie pi * 2
@@ -60,6 +61,12 @@ int strToInt(char* s) {
 }
 
 int main(int argc, char** argv) {
+
+  // we're doing something else
+  char* hi = "hi bob";
+  if(strContainsStr(hi, "bob"))
+    return 0;
+
   argv++;
   if(--argc == 0) {
     printf("Sorry i need a time in seconds to count down from\n");

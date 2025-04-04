@@ -1,0 +1,23 @@
+#include <stdbool.h>
+
+bool strContainsChar(char* s, char c) {
+  while(*s != '\0')
+    if(*(s++) == c)
+      return true;
+  return false;
+}
+
+bool strContainsStr(char* first, char* second) {
+  while(*first != '\0')
+    if(*first == *second) {
+      int i = 0;
+      for(; *(first++) == *(second++); i++)
+        if(*second == '\0')
+          return true;
+        else if(*first == '\0')
+          return false;
+      first -= i + 1;
+      second -= i;
+    } else first++;
+  return false;
+}
