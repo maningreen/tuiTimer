@@ -1,6 +1,7 @@
 #include <math.h>
 #include <ncurses.h>
 #include <unistd.h>
+#include "str.h"
 
 #define pi 3.141592 // it aint that deep
 #define twopie pi * 2
@@ -8,12 +9,12 @@
 
 #define getCenter(vec) { getmaxyx(stdscr, vec.y, vec.x); vec.x /= 2; vec.y /= 2; }
 
+#define scaleFactor .5
+
 typedef struct {
   float x;
   float y;
 } vector2;
-
-#define scaleFactor .5
 
 void drawCircle(float radius, char character) {
   const float stepSize = 1.0f / (twopie * radius);
@@ -52,27 +53,44 @@ void toTime(unsigned timeLeft, float* seconds, float* minutes, float* hours) {
   *hours = timeLeft / 3600.0f;
 }
 
-int strToInt(char* s) {
-  int val = 0;
-  while(*s != '\0')
-    val = (val * 10) + *(s++) - '0';
-  return val;
-}
 
 int main(int argc, char** argv) {
+  unsigned timeRemaining = 0;
   argv++;
   if(--argc == 0) {
-    printf("Sorry i need a time in seconds to count down from\n");
+    printf("Sorry i need a time in seconds to count down from\ndo tuitimer -t (seconds)\nsee --help for more details\n");
     return 1;
-  } else if(argc > 1) {
-    printf("Sorry i can't handle multiple arguments yet\n");
-    return 2;
+  } 
+  //we go through de args now :p
+  while(argc) {
+    bool containsDash = **argv == '-';
+    bool doubleDash = (*argv)[1] == '-' && containsDash;
+    if(containsDash && strContainsStr(*argv, "h") && !doubleDash || strContainsStr(*argv, "--help")) {
+      puts("HELP:");
+      puts("tuitimer is a simple, lightweight terminal cli in c.");
+      puts("");
+      puts("-h, --help                : Show this help message");
+      puts("-t                        : set the length (s) of the timer");
+      puts("");
+      puts("ARGUMENT FORMATTING:");
+      puts("example, set timer for 2 seconds:");
+      puts("tuitimer -t 2");
+      puts("     flag ^ ^ argument");
+
+
+      return 0;
+    } else if(strIsStr(*argv, "-t")) {
+      timeRemaining = strToInt(*(++argv));
+      argc--;
+    }
+    argc--;
+  }
+
+  if(timeRemaining == 0) {
+    printf("Sorry i need a time in seconds to count down from, either you put in 0 or you didn't include the -t argument\nsee --help for more details\n");
   }
 
   initscr();
-
-  unsigned timeRemaining = strToInt(argv[0]);
-  printf("%d\n", timeRemaining);
 
   curs_set(0);
   nodelay(stdscr, true);
@@ -90,9 +108,9 @@ int main(int argc, char** argv) {
     erase();
     
     drawCircle(30, '#');
-    drawHand(30, angleM, 'm');
-    drawHand(30, angleS, 's');
-    drawHand(30, angleH, 'h');
+    drawHand(23, angleM, 'm');
+    drawHand(25, angleS, 's');
+    drawHand(17, angleH, 'h');
 
     refresh();
 
