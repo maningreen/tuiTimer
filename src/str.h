@@ -7,4 +7,6 @@ bool strContainsStr(char* first, char* second);
 
 int strToInt(char* s);
 
+bool strIsStr(char* first, char* second);
+
 #endif

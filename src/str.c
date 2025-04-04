@@ -1,4 +1,5 @@
 #include <stdbool.h>
+#include "str.h"
 
 bool strContainsChar(char* s, char c) {
   while(*s != '\0')
@@ -27,4 +28,11 @@ int strToInt(char* s) {
   while(*s != '\0')
     val = (val * 10) + *(s++) - '0';
   return val;
+}
+
+bool strIsStr(char* first, char* second) {
+  while(*(second++) == *(first++))
+    if(*first == '\0' && *second == '\0')
+      return true;
+  return false;
 }
