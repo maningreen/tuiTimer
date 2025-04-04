@@ -5,4 +5,6 @@ bool strContainsChar(char* s, char c);
 
 bool strContainsStr(char* first, char* second);
 
+int strToInt(char* s);
+
 #endif

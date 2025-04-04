@@ -26,5 +26,5 @@ $(BUILDDIR):
 clean:
 	rm -r $(BUILDDIR)*
 
-run: $(OBJECTS) $(TARGET)
+run: $(TARGET)
 	$(BUILDDIR)$(OUT)

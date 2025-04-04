@@ -53,20 +53,7 @@ void toTime(unsigned timeLeft, float* seconds, float* minutes, float* hours) {
   *hours = timeLeft / 3600.0f;
 }
 
-int strToInt(char* s) {
-  int val = 0;
-  while(*s != '\0')
-    val = (val * 10) + *(s++) - '0';
-  return val;
-}
-
 int main(int argc, char** argv) {
-
-  // we're doing something else
-  char* hi = "hi bob";
-  if(strContainsStr(hi, "bob"))
-    return 0;
-
   argv++;
   if(--argc == 0) {
     printf("Sorry i need a time in seconds to count down from\n");
@@ -79,7 +66,6 @@ int main(int argc, char** argv) {
   initscr();
 
   unsigned timeRemaining = strToInt(argv[0]);
-  printf("%d\n", timeRemaining);
 
   curs_set(0);
   nodelay(stdscr, true);
