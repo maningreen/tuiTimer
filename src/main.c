@@ -3,6 +3,7 @@
 #include <unistd.h>
 
 #define pi 3.141592 // it aint that deep
+#define twopie pi * 2
 #define second 1000000
 
 #define getCenter(vec) { getmaxyx(stdscr, vec.y, vec.x); vec.x /= 2; vec.y /= 2; }
@@ -15,12 +16,8 @@ typedef struct {
 #define scaleFactor .5
 
 void drawCircle(float radius, char character) {
-  // there's a *real* way to do this and it's kinda evil but :)
-  // what you do is you store the first quarter of the rotations
-  // from 0 r to pi / 2 r
-  // but oh ho ho how do we decide how our accuraccy
-  const unsigned int stepCount = radius;
-  const float stepSize = pi / (2 * stepCount);
+  const float stepSize = 1.0f / (twopie * radius);
+  const unsigned int stepCount = 2 * twopie * radius;
 
   vector2 center; 
   getCenter(center);
@@ -35,7 +32,7 @@ void drawCircle(float radius, char character) {
 }
 
 void drawHand(float length, float angle, char character) {
-  const float stepSize = .5;
+  const float stepSize = 1;
 
   vector2 scalar = {cos(angle), sin(angle) * scaleFactor};
 
@@ -55,10 +52,27 @@ void toTime(unsigned timeLeft, float* seconds, float* minutes, float* hours) {
   *hours = timeLeft / 3600.0f;
 }
 
-int main() {
+int strToInt(char* s) {
+  int val = 0;
+  while(*s != '\0')
+    val = (val * 10) + *(s++) - '0';
+  return val;
+}
+
+int main(int argc, char** argv) {
+  argv++;
+  if(--argc == 0) {
+    printf("Sorry i need a time in seconds to count down from\n");
+    return 1;
+  } else if(argc > 1) {
+    printf("Sorry i can't handle multiple arguments yet\n");
+    return 2;
+  }
+
   initscr();
 
-  unsigned timeRemaining = 60 * 2; // we'll worry abt setting this later
+  unsigned timeRemaining = strToInt(argv[0]);
+  printf("%d\n", timeRemaining);
 
   curs_set(0);
   nodelay(stdscr, true);
