@@ -11,6 +11,11 @@
 
 #define scaleFactor .5
 
+#define relativeSecondScale .6
+#define relativeMinuteScale .5
+#define relativeHourScale .3
+#define relativeRadius .7
+
 typedef struct {
   float x;
   float y;
@@ -106,11 +111,19 @@ int main(int argc, char** argv) {
     float angleH = pi * 2 * (timeH / 24.0f) - pi / 2;
 
     erase();
+
+    int min;
+    {
+      int x;
+      int y;
+      getmaxyx(stdscr, y, x);
+      min = x < y ? x : y;
+    }
     
-    drawCircle(30, '#');
-    drawHand(23, angleM, 'm');
-    drawHand(25, angleS, 's');
-    drawHand(17, angleH, 'h');
+    drawCircle(min * relativeRadius, '#');
+    drawHand(min * relativeHourScale, angleH, 'h');
+    drawHand(min * relativeMinuteScale, angleM, 'm');
+    drawHand(min * relativeSecondScale, angleS, 's');
 
     refresh();
 
