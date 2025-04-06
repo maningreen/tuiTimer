@@ -11,11 +11,11 @@ CC = gcc
 LDFLAGS = -lncurses -lm
 
 # target
-TARGET = out
+TARGET = build/out
 BUILDDIR = build/
 
 $(TARGET): $(OBJECTS) $(BUILDDIR)
-	$(CC) $(OBJECTS) -o $(BUILDDIR)$(TARGET) $(LDFLAGS)
+	$(CC) $(OBJECTS) -o $(TARGET) $(LDFLAGS)
 
 build/%.o: src/%.c $(BUILDDIR)
 	$(CC) -c $< -o $@

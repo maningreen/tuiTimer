@@ -16,6 +16,10 @@
 #define relativeHourScale .3
 #define relativeRadius .7
 
+#define relativeTimeOffset .9
+
+#define fixLog(x) ((int)floorf(x) < 1 ? 1 : (int)floorf(x))
+
 typedef struct {
   float x;
   float y;
@@ -105,7 +109,6 @@ int main(int argc, char** argv) {
     float timeM;
     float timeH;
     toTime(timeRemaining, &timeS, &timeM, &timeH);
-
     float angleS = pi * 2 * (timeS / 60.0f) - pi / 2;
     float angleM = pi * 2 * (timeM / 60.0f) - pi / 2;
     float angleH = pi * 2 * (timeH / 24.0f) - pi / 2;
@@ -124,6 +127,19 @@ int main(int argc, char** argv) {
     drawHand(min * relativeHourScale, angleH, 'h');
     drawHand(min * relativeMinuteScale, angleM, 'm');
     drawHand(min * relativeSecondScale, angleS, 's');
+
+    {
+      // here we print out the time :p
+      // get the length of the time
+      float l = log10f(fixLog(timeH) * fixLog(timeM) * fixLog(timeS));
+      //                    ^ simple logarithmic property
+      //account for :'s
+      l += 6;
+      float off = l / 2;
+      vector2 center;
+      getCenter(center);
+      mvprintw(min * relativeTimeOffset, center.x - off, "%d : %d : %d", (int)timeH, (int)timeM, (int)timeS);
+    }
 
     refresh();
 
